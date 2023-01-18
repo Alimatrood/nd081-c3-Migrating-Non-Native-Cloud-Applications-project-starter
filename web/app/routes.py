@@ -67,19 +67,29 @@ def notification():
             db.session.add(notification)
             db.session.commit()
 
+
+
+            # create message
+            msg = Message(str(notification.id))
+
+            bus_qClient= queue_client.from_connection_string(app.config.get('SERVICE_BUS_CONNECTION_STRING'), app.config.get('SERVICE_BUS_QUEUE_NAME'))
+
+            # send message
+            bus_qClient.send(msg)   
+
             ##################################################
             ## TODO: Refactor This logic into an Azure Function
             ## Code below will be replaced by a message queue
             #################################################
-            attendees = Attendee.query.all()
+            # attendees = Attendee.query.all()
 
-            for attendee in attendees:
-                subject = '{}: {}'.format(attendee.first_name, notification.subject)
-                send_email(attendee.email, subject, notification.message)
+            # for attendee in attendees:
+            #     subject = '{}: {}'.format(attendee.first_name, notification.subject)
+            #     send_email(attendee.email, subject, notification.message)
 
-            notification.completed_date = datetime.utcnow()
-            notification.status = 'Notified {} attendees'.format(len(attendees))
-            db.session.commit()
+            # notification.completed_date = datetime.utcnow()
+            # notification.status = 'Notified {} attendees'.format(len(attendees))
+            # db.session.commit()
             # TODO Call servicebus queue_client to enqueue notification ID
 
             #################################################
