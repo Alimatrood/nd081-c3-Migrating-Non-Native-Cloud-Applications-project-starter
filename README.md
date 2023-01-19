@@ -71,3 +71,5 @@ Complete a month cost analysis of each Azure resource to give an estimate total 
 
 ## Architecture Explanation
 Azure app service (web app) was used because of the ease to deploy applications when compared to VMs which will require effort to setup, install required apps and softwares, making configurations and taking care of security. Since the app is not big, we used the above plan for function app which will be enough, and will not cost much.
+
+The current architecture will allow the app to scale vertically and horizontally, which is not applicable in the previous architecture. Secondly, doing a long-running job in the foreground is not recommended since that will freeze the website and will not be rendered until the job is completed, thats why we used azure function app to handle the job in the background, one by one using the queue implemented in the service bus.
